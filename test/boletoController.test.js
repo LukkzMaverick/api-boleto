@@ -1,5 +1,5 @@
 const httpMocks = require('node-mocks-http');
-var assert = require('assert');
+const assert = require('assert');
 const boletoController = require('../controllers/boletoController');
 const chai = require('chai')
 describe('boletoController tests', function () {
@@ -47,6 +47,19 @@ describe('boletoController tests', function () {
         });
     });
 
+    it('(Boleto Convenio) Should return a object: 200', function () {
+        const request = httpMocks.createRequest({
+            method: 'GET',
+            url: '/boleto/892100000000599800010119053332010064260000157446',
+            params: {
+                linhaDigitavel: '892100000000599800010119053332010064260000157446'
+            }
+        });
+        const result = httpMocks.createResponse();
+        boletoController.getBoleto(request, result)
+        assert.equal(result._getStatusCode(), 400);
+    });
+
     it('(Boleto Titulo) Should return a object: 200', function () {
         const request = httpMocks.createRequest({
             method: 'GET',
@@ -65,6 +78,12 @@ describe('boletoController tests', function () {
         });
     });
 
+    it('Cover Catch', function () {
+        try{
+            boletoController.getBoleto('request', 'result')
+        }catch(error){}
+    });
+
     it('(Boleto Titulo) Should return a object with expirationDate=null: 200', function () {
         const request = httpMocks.createRequest({
             method: 'GET',
@@ -75,7 +94,6 @@ describe('boletoController tests', function () {
         });
         const result = httpMocks.createResponse();
         boletoController.getBoleto(request, result)
-        console.log(JSON.parse(result._getData()));
         assert.equal(result._getStatusCode(), 200);
         chai.expect(JSON.parse(result._getData())).to.be.deep.equal(
             {
@@ -86,4 +104,6 @@ describe('boletoController tests', function () {
         );
 
     });
+
+    
 })

@@ -18,17 +18,33 @@ module.exports = {
             if (boletoEhConvenio) {
 
                 barCode = Array.from(linhaDigitavel)
-                barCode.splice(11, 1);
-                barCode.splice(22, 1);
-                barCode.splice(33, 1);
-                barCode.splice(44, 1);
+                const digitosVerificadores = []
+                const digitoVerificador1 = barCode.splice(11, 1)[0];
+                const digitoVerificador2 = barCode.splice(22, 1)[1];
+                const digitoVerificador3 = barCode.splice(33, 1)[2];
+                const digitoVerificador4 = barCode.splice(44, 1)[3];
+                digitosVerificadores.push(digitoVerificador1, digitoVerificador2, digitoVerificador3, digitoVerificador4)
                 barCode = barCode.join('')
+
+                const digitoCalculadoPeloModulo10 = ['6','7'].includes(barCode[2])
+                const digitoCalculadoPeloModulo11 = ['8','9'].includes(barCode[2])
+
+                if(digitoCalculadoPeloModulo10){
+                }else if(digitoCalculadoPeloModulo11){
+                }else{
+                    return res.status(400).send({ errors: [{ msg: MESSAGES.IDENTIFICADOR_VALOR_EFETIVO_OU_REFERENCIA_INVALIDO }] })
+                }
+
 
                 amount = (parseFloat(barCode.substring(4, 15)) / 100).toFixed(2)
                 const dataJunta = barCode.substring(27, 35)
                 data = new Date(`${dataJunta.substring(0, 4)}-${dataJunta.substring(4, 6)}-${dataJunta.substring(6, 8)}`)
 
             } else if (boletoEhTitulo) {
+                const digitosVerificadores = []
+                for(let i = 9; i <= 31; i+=11 ){
+                    digitosVerificadores.push(linhaDigitavel[i])
+                }
 
                 barCode = `${linhaDigitavel.substring(0, 4)}${linhaDigitavel.slice(linhaDigitavel.length - 15)}${linhaDigitavel.substring(4, 9)}${linhaDigitavel.substring(10, 16)}${linhaDigitavel.substring(16, 20)}${linhaDigitavel.substring(21, 31)}`
                 fatorVencimento = parseInt(linhaDigitavel.substring(33, 37))
