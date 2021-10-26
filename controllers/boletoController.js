@@ -64,7 +64,6 @@ module.exports = {
                 }
 
                 try {
-                    console.log(dacs, digitosVerificadores)
                     assert.deepEqual(dacs, digitosVerificadores)
                 } catch (error) {
                     return res.status(400).send({ errors: [{ msg: MESSAGES.DAC_INCORRETO }] })
